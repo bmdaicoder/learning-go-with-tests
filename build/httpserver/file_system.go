@@ -8,11 +8,6 @@ import (
 	"sort"
 )
 
-type ReadWriteSeekTruncate interface {
-	io.ReadWriteSeeker
-	Truncate(size int64) error
-}
-
 type FileSystemPlayerStore struct {
 	database *json.Encoder
 	league   League
@@ -32,7 +27,7 @@ func NewFileSystemPlayerStore(file *os.File) (*FileSystemPlayerStore, error) {
 	}
 
 	return &FileSystemPlayerStore{
-		database: json.NewEncoder(&tape{file}),
+		database: json.NewEncoder(&Tape{file}),
 		league:   league,
 	}, nil
 }

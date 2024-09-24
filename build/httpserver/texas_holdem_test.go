@@ -2,21 +2,18 @@ package poker_test
 
 import (
 	"fmt"
+	"io"
 	poker "learning-go-with-tests/build/httpserver"
 	"testing"
 	"time"
 )
-
-var dummyPlayerStore = &poker.StubPlayerStore{}
-
-var dummyBlindAlerter = &poker.SpyBlindAlerter{}
 
 func TestGame_Start(t *testing.T) {
 	t.Run("schedules alerts on game start for 5 players", func(t *testing.T) {
 		blindAlerter := &poker.SpyBlindAlerter{}
 		game := poker.NewTexasHoldem(blindAlerter, dummyPlayerStore)
 
-		game.Start(5)
+		game.Start(5, io.Discard)
 
 		cases := []poker.ScheduledAlert{
 			{At: 0 * time.Second, Amount: 100},
@@ -39,7 +36,7 @@ func TestGame_Start(t *testing.T) {
 		blindAlerter := &poker.SpyBlindAlerter{}
 		game := poker.NewTexasHoldem(blindAlerter, dummyPlayerStore)
 
-		game.Start(7)
+		game.Start(7, io.Discard)
 
 		cases := []poker.ScheduledAlert{
 			{At: 0 * time.Second, Amount: 100},
@@ -71,7 +68,7 @@ func checkSchedulingCases(cases []poker.ScheduledAlert, t *testing.T, blindAlert
 			}
 
 			got := blindAlerter.Alerts[i]
-			AssertScheduledAlert(t, got, want)
+			assertScheduledAlert(t, got, want)
 		})
 	}
 }
